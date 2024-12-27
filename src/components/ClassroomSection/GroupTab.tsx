@@ -1,14 +1,19 @@
 import { Fragment } from 'react/jsx-runtime';
 import styled from 'styled-components';
 
+import { Student } from '../../types';
+
 const Group = styled.div`
   margin-bottom: 1rem;
   padding: 0 1rem;
+  overflow-y: scroll;
+  height: 100%;
+  max-height: 18rem;
 `;
 
 const GroupTitle = styled.h4`
-  margin: 0 0 8px 0;
-  font-size: 16px;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
   font-weight: bold;
 `;
 
@@ -38,34 +43,28 @@ const GroupItem = styled.div`
 `;
 
 const StudentName = styled.span`
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 const StudentScore = styled.span<{ $negative: boolean }>`
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: bold;
   color: ${(props) =>
     props.$negative ? props.theme.colors.negative : props.theme.colors.positive};
 `;
 
 type GroupTabProps = {
-  groups: {
-    name: string;
-    students: {
-      name: string;
-      score: number;
-    }[];
-  }[];
+  groups: Record<string, Student[]>;
 };
 
 function GroupTab({ groups }: GroupTabProps) {
   return (
     <Group>
-      {groups.map((group) => (
-        <Fragment key={group.name}>
-          <GroupTitle>{group.name}</GroupTitle>
+      {Object.entries(groups).map(([groupName, students]) => (
+        <Fragment key={groupName}>
+          <GroupTitle>{groupName}</GroupTitle>
           <GroupItems>
-            {group.students.map((student) => (
+            {students.map((student) => (
               <GroupItem key={student.name}>
                 <StudentName>{student.name}</StudentName>
                 <StudentScore $negative={student.score < 0}>{student.score}</StudentScore>

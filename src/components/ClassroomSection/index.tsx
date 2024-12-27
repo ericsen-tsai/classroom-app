@@ -1,8 +1,14 @@
-import { useMemo, useState } from 'react';
-import { IoMdPerson } from 'react-icons/io'; // Styled components
+import { useEffect, useMemo, useState } from 'react';
+import { IoMdPerson } from 'react-icons/io';
 import { IoMdMore } from 'react-icons/io';
 import { IoCloseSharp } from 'react-icons/io5';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+
+import { useGetClassroomDataQuery } from '../../services/api';
+import { setClassroomData } from '../../store/classroomSlice';
+import { RootState } from '../../store/store';
+import { Student } from '../../types';
 
 import GroupTab from './GroupTab';
 import { PopoverAnchor, PopoverButton, PopoverContent } from './materials/Popover';
@@ -75,100 +81,91 @@ const WinnerPopoverName = styled.span`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-// Example usage
-const students = [
-  { name: 'Philip', positiveScore: 2, negativeScore: -1, isGuest: false },
-  { name: 'Darrell', positiveScore: 5, negativeScore: 1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Cody', positiveScore: 4, negativeScore: -1, isGuest: false },
-  { name: 'Bessie', positiveScore: 3, negativeScore: -1, isGuest: false },
-  { name: 'Wendy', positiveScore: 1, negativeScore: -1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Esther', positiveScore: 1, negativeScore: 1, isGuest: false },
-  { name: 'Gloria', positiveScore: 2, negativeScore: -1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Lee', positiveScore: 3, negativeScore: -1, isGuest: false },
-  { name: 'Ann', positiveScore: 1, negativeScore: -1, isGuest: false },
-  { name: 'Jacob', positiveScore: 8, negativeScore: 1, isGuest: false },
-  { name: 'Calvin', positiveScore: 1, negativeScore: 0, isGuest: false },
-  { name: 'Joe', positiveScore: 0, negativeScore: -1, isGuest: false },
-  { name: 'Philip', positiveScore: 2, negativeScore: -1, isGuest: false },
-  { name: 'Darrell', positiveScore: 5, negativeScore: 1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Cody', positiveScore: 4, negativeScore: -1, isGuest: false },
-  { name: 'Bessie', positiveScore: 3, negativeScore: -1, isGuest: false },
-  { name: 'Wendy', positiveScore: 1, negativeScore: -1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Esther', positiveScore: 1, negativeScore: 1, isGuest: false },
-  { name: 'Gloria', positiveScore: 2, negativeScore: -1, isGuest: false },
-  { name: 'Guest', positiveScore: 0, negativeScore: 0, isGuest: true },
-  { name: 'Lee', positiveScore: 3, negativeScore: -1, isGuest: false },
-  { name: 'Ann', positiveScore: 1, negativeScore: -1, isGuest: false },
-  { name: 'Jacob', positiveScore: 8, negativeScore: 1, isGuest: false },
-  { name: 'Calvin', positiveScore: 1, negativeScore: 0, isGuest: false },
-  { name: 'Joe', positiveScore: 0, negativeScore: -1, isGuest: false },
-];
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+`;
 
-const groups = [
-  {
-    name: 'Group 1',
-    students: [
-      { name: 'Gloria', score: 1 },
-      { name: 'Darrell', score: 2 },
-      { name: 'Philip', score: 3 },
-      { name: 'Cody', score: 4 },
-      { name: 'Bessie', score: 5 },
-    ],
-  },
-  {
-    name: 'Group 2',
-    students: [
-      { name: 'Gloria', score: -1 },
-      { name: 'Darrell', score: 2 },
-      { name: 'Philip', score: 3 },
-      { name: 'Cody', score: 4 },
-      { name: 'Bessie', score: 5 },
-    ],
-  },
-];
+const StudentList = () => {
+  const dispatch = useDispatch();
+  const { data, isLoading, error } = useGetClassroomDataQuery();
 
-const StudentList = ({
-  students,
-  title,
-  subtitle,
-}: {
-  students: {
-    name: string;
-    positiveScore: number;
-    negativeScore: number;
-    isGuest: boolean;
-  }[];
-  title: string;
-  subtitle: string;
-}) => {
+  useEffect(() => {
+    if (data) {
+      dispatch(setClassroomData(data));
+    }
+  }, [data, dispatch]);
+
   const [tab, setTab] = useState('studentList');
   const [showPopover, setShowPopover] = useState(false);
+
+  const classroomData = useSelector((state: RootState) => state.classroom.data);
+
+  const groups = useMemo(() => {
+    return (
+      classroomData?.students.reduce<Record<string, Student[]>>((acc, student) => {
+        if (!acc[student.group]) {
+          acc[student.group] = [];
+        }
+        acc[student.group].push(student);
+        return acc;
+      }, {}) ?? {}
+    );
+  }, [classroomData]);
 
   const renderContent = useMemo(() => {
     switch (tab) {
       case 'studentList':
-        return <StudentListTab students={students} />;
+        return (
+          <StudentListTab
+            students={classroomData?.students || []}
+            totalSeats={classroomData?.total_seats || 0}
+          />
+        );
       case 'group':
         return <GroupTab groups={groups} />;
       default:
         return null;
     }
-  }, [students, tab]);
+  }, [tab, groups, classroomData?.students, classroomData?.total_seats]);
 
-  const winner = 'Philip';
+  const winnerName = useMemo(() => {
+    return classroomData?.students.reduce((acc, student) => {
+      if (student.score > acc.score) {
+        return student;
+      }
+      return acc;
+    }, classroomData?.students[0]).name;
+  }, [classroomData?.students]);
+
+  const firstGroup = useMemo(() => {
+    const groupScore = Object.values(groups).reduce<Record<string, number>>((acc, group) => {
+      return {
+        ...acc,
+        [group[0].group]: group.reduce((acc, student) => acc + student.score, 0),
+      };
+    }, {});
+    return Object.entries(groupScore).sort((a, b) => b[1] - a[1])?.[0]?.[0] ?? '- -';
+  }, [groups]);
+
+  if (isLoading)
+    return (
+      <Container>
+        <LoadingContainer>Loading...</LoadingContainer>
+      </Container>
+    );
+  if (error || !classroomData) return <div>Error loading classroom classroomData</div>;
 
   return (
     <Container>
       <Header>
-        <Title>{title}</Title>
+        <Title>{classroomData.name}</Title>
         <SubTitle>
           <IoMdPerson />
-          {subtitle}
+          {`${classroomData.students.length}/${classroomData.total_seats}`}
         </SubTitle>
       </Header>
       <CloseButton onClick={() => alert('Close QR Code')}>
@@ -195,20 +192,19 @@ const StudentList = ({
           </PopoverButton>
           <PopoverContent show={showPopover} onClose={() => setShowPopover(false)}>
             <WinnerPopoverText>
-              Winner: <WinnerPopoverName>{winner}</WinnerPopoverName>
+              Winner: <WinnerPopoverName>{winnerName}</WinnerPopoverName>
             </WinnerPopoverText>
             <WinnerPopoverText>
-              1st Group: <WinnerPopoverName>{winner}</WinnerPopoverName>
+              1st Group: <WinnerPopoverName>{firstGroup}</WinnerPopoverName>
             </WinnerPopoverText>
           </PopoverContent>
         </PopoverAnchor>
       </TabsHeader>
-
       <TabContainer>{renderContent}</TabContainer>
     </Container>
   );
 };
 
 export default function ClassroomSection() {
-  return <StudentList title="302 Science" subtitle="16/30" students={students} />;
+  return <StudentList />;
 }

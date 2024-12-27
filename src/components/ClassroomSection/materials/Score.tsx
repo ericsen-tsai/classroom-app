@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { styled } from 'styled-components';
+
+import { updateStudentScore } from '../../../store/classroomSlice';
 
 const Card = styled.div<{ $disabled?: boolean }>`
   display: flex;
@@ -71,24 +73,33 @@ const Counter = styled.span`
 
 type ScoreProps = {
   name: string;
-  initialCount: number;
+  count: number;
   title: string;
   disabled?: boolean;
+  studentId: number;
 };
 
-function Score({ name, initialCount, title, disabled }: ScoreProps) {
-  const [count, setCount] = useState(initialCount);
+function Score({ name, count, title, disabled, studentId }: ScoreProps) {
+  const dispatch = useDispatch();
+
+  const handleIncrement = () => {
+    dispatch(updateStudentScore({ studentId, change: 1 }));
+  };
+
+  const handleDecrement = () => {
+    dispatch(updateStudentScore({ studentId, change: -1 }));
+  };
 
   return (
     <Card $disabled={disabled}>
       <CardHeader $disabled={disabled}>{title}</CardHeader>
       <CardBody>{name}</CardBody>
       <CardFooter>
-        <FooterButton onClick={() => setCount(count - 1)} $disabled={disabled}>
+        <FooterButton onClick={handleDecrement} $disabled={disabled}>
           -1
         </FooterButton>
         <Counter>{count}</Counter>
-        <FooterButton $increment onClick={() => setCount(count + 1)} $disabled={disabled}>
+        <FooterButton onClick={handleIncrement} $increment $disabled={disabled}>
           +1
         </FooterButton>
       </CardFooter>

@@ -1,7 +1,9 @@
+import { Provider } from 'react-redux';
 import styled from 'styled-components';
 
 import ClassroomSection from './components/ClassroomSection';
 import QRCodeSection from './components/QRCodeSection';
+import { store } from './store/store';
 
 const AppContainer = styled.div`
   padding: 2rem;
@@ -15,10 +17,12 @@ const AppContainer = styled.div`
 
 function App() {
   return (
-    <AppContainer>
-      <QRCodeSection />
-      <ClassroomSection />
-    </AppContainer>
+    <Provider store={store}>
+      <AppContainer>
+        <QRCodeSection />
+        <ClassroomSection />
+      </AppContainer>
+    </Provider>
   );
 }
 

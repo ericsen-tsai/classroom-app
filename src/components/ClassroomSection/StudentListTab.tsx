@@ -1,4 +1,7 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
+
+import { Student } from '../../types';
 
 import Score from './materials/Score';
 
@@ -15,24 +18,28 @@ const StudentGrid = styled.div`
 `;
 
 type StudentListTabProps = {
-  students: {
-    name: string;
-    positiveScore: number;
-    negativeScore: number;
-    isGuest: boolean;
-  }[];
+  students: Student[];
+  totalSeats: number;
 };
 
-function StudentListTab({ students }: StudentListTabProps) {
+function StudentListTab({ students, totalSeats }: StudentListTabProps) {
+  const studentList = useMemo(() => {
+    return new Array(totalSeats).fill(0).map((_, index) => {
+      const student = students.find((student) => student.seat === index + 1);
+      return student;
+    });
+  }, [students, totalSeats]);
+
   return (
     <StudentGrid>
-      {students.map((student, index) => (
+      {studentList.map((student, index) => (
         <Score
           key={index}
-          name={student.name}
-          initialCount={student.positiveScore}
+          name={student?.name ?? 'Guest'}
+          count={student?.score ?? 0}
           title={(index + 1).toString().padStart(2, '0')}
-          disabled={student.isGuest}
+          disabled={!student}
+          studentId={student?.id ?? 0}
         />
       ))}
     </StudentGrid>
