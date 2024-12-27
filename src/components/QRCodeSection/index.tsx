@@ -11,7 +11,7 @@ const Container = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1rem 1.5rem;
-  width: 20rem;
+  width: 25rem;
   position: relative;
 `;
 
@@ -101,7 +101,7 @@ const CloseButton = styled.button`
   color: ${({ theme }) => theme.colors.caption};
 `;
 
-const QRCodeComponent = () => {
+function QRCodeComponent() {
   return (
     <Container>
       <Header>
@@ -109,7 +109,7 @@ const QRCodeComponent = () => {
           <MdKeyboardArrowLeft /> Back to Class List
         </BackButton>
         <CloseButton onClick={() => alert('Close QR Code')}>
-          <IoCloseSharp />
+          <IoCloseSharp size={20} />
         </CloseButton>
       </Header>
       <Title>Join 302 Science</Title>
@@ -132,11 +132,11 @@ const QRCodeComponent = () => {
         </SubTitle>
       </Flex>
       <QRCodeContainer>
-        <QRCode value="https://www.classswift.viewsonic.io/" />
+        <QRCode value="https://www.classswift.viewsonic.io/" size={256} />
       </QRCodeContainer>
       <Version>Version 1.1.7</Version>
     </Container>
   );
-};
+}
 
 export default QRCodeComponent;

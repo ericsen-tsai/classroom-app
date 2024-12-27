@@ -57,7 +57,7 @@ const FooterButton = styled.button<{ $increment?: boolean; $disabled?: boolean }
   padding: 2px 6px;
   font-size: 0.8rem;
   cursor: pointer;
-
+  pointer-events: ${(props) => (props.$disabled ? 'none' : 'auto')};
   &:hover {
     opacity: 0.8;
   }
@@ -84,7 +84,10 @@ function Room({ name, initialCount, title, disabled }: RoomProps) {
       <CardHeader $disabled={disabled}>{title}</CardHeader>
       <CardBody>{name}</CardBody>
       <CardFooter>
-        <FooterButton onClick={() => setCount(count - 1)} $disabled={disabled}>
+        <FooterButton
+          onClick={() => setCount(Math.max(0, count - 1))}
+          $disabled={disabled || count === 0}
+        >
           -1
         </FooterButton>
         <Counter>{count}</Counter>

@@ -1,18 +1,24 @@
+import { useState } from 'react';
 import { IoMdPerson } from 'react-icons/io'; // Styled components
+import { IoMdMore } from 'react-icons/io';
 import { IoCloseSharp } from 'react-icons/io5';
 import styled from 'styled-components';
 
+import { PopoverAnchor, PopoverButton, PopoverContent } from './materials/Popover';
 import Room from './materials/Room';
+import { Tabs, TabContainer } from './materials/Tabs';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1rem 0;
+  padding-top: 1rem;
   position: relative;
-  max-height: 26.5rem;
+  height: 26.5rem;
   width: 35rem;
 `;
 
@@ -21,7 +27,7 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  padding: 1rem 1rem 0 1rem;
+  padding: 1rem 1.5rem 0 1.5rem;
   gap: 1rem;
 `;
 
@@ -44,9 +50,12 @@ const StudentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
-  overflow-y: scroll;
   width: 100%;
-  padding: 0 1rem;
+  overflow-y: scroll;
+  height: 100%;
+  max-height: 18rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
 `;
 
 const CloseButton = styled.button`
@@ -57,6 +66,14 @@ const CloseButton = styled.button`
   top: 0.5rem;
   right: 0.5rem;
   color: ${({ theme }) => theme.colors.caption};
+`;
+
+const TabsHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 1.5rem;
 `;
 
 // Example usage
@@ -107,6 +124,8 @@ const StudentList = ({
   title: string;
   subtitle: string;
 }) => {
+  const [tab, setTab] = useState('studentList');
+  const [showPopover, setShowPopover] = useState(false);
   return (
     <Container>
       <Header>
@@ -117,19 +136,46 @@ const StudentList = ({
         </SubTitle>
       </Header>
       <CloseButton onClick={() => alert('Close QR Code')}>
-        <IoCloseSharp />
+        <IoCloseSharp size={20} />
       </CloseButton>
-      <StudentGrid>
-        {students.map((student, index) => (
-          <Room
-            key={index}
-            name={student.name}
-            initialCount={student.positiveScore}
-            title={(index + 1).toString().padStart(2, '0')}
-            disabled={student.isGuest}
-          />
-        ))}
-      </StudentGrid>
+      <TabsHeader>
+        <Tabs
+          tabs={[
+            {
+              label: 'Student List',
+              value: 'studentList',
+            },
+            {
+              label: 'Group',
+              value: 'group',
+            },
+          ]}
+          onTabValueChange={setTab}
+          tabValue={tab}
+        />
+        <PopoverAnchor>
+          <PopoverButton onClick={() => setShowPopover(!showPopover)}>
+            <IoMdMore size={20} />
+          </PopoverButton>
+          <PopoverContent show={showPopover} onClose={() => setShowPopover(false)}>
+            Hello
+          </PopoverContent>
+        </PopoverAnchor>
+      </TabsHeader>
+
+      <TabContainer>
+        <StudentGrid>
+          {students.map((student, index) => (
+            <Room
+              key={index}
+              name={student.name}
+              initialCount={student.positiveScore}
+              title={(index + 1).toString().padStart(2, '0')}
+              disabled={student.isGuest}
+            />
+          ))}
+        </StudentGrid>
+      </TabContainer>
     </Container>
   );
 };
