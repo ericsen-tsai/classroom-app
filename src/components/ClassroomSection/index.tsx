@@ -19,7 +19,7 @@ const Container = styled.div`
   padding-top: 1rem;
   position: relative;
   height: 26.5rem;
-  width: 35rem;
+  width: 40rem;
 `;
 
 const Header = styled.div`
