@@ -28,14 +28,22 @@ const Container = styled.div`
   height: 26.5rem;
   width: 35rem;
   min-width: 35rem;
+  cursor: default;
 `;
 
-const Header = styled.div`
+const InvisibleHeader = styled.div`
+  height: 1rem;
+  min-height: 1rem;
+  width: 100%;
+  cursor: move;
+`;
+
+const TitleBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  padding: 1rem 1.5rem 0 1.5rem;
+  padding: 0 1.5rem 0 1.5rem;
   gap: 1rem;
 `;
 
@@ -89,7 +97,7 @@ const LoadingContainer = styled.div`
   width: 100%;
 `;
 
-const StudentList = () => {
+export default function ClassroomSection({ onClose }: { onClose: () => void }) {
   const dispatch = useDispatch();
   const { data, isLoading, error } = useGetClassroomDataQuery();
 
@@ -161,14 +169,15 @@ const StudentList = () => {
 
   return (
     <Container>
-      <Header>
+      <InvisibleHeader />
+      <TitleBar>
         <Title>{classroomData.name}</Title>
         <SubTitle>
           <IoMdPerson />
           {`${classroomData.students.length}/${classroomData.total_seats}`}
         </SubTitle>
-      </Header>
-      <CloseButton onClick={() => alert('Close QR Code')}>
+      </TitleBar>
+      <CloseButton onClick={onClose}>
         <IoCloseSharp size={20} />
       </CloseButton>
       <TabsHeader>
@@ -203,8 +212,4 @@ const StudentList = () => {
       <TabContainer>{renderContent}</TabContainer>
     </Container>
   );
-};
-
-export default function ClassroomSection() {
-  return <StudentList />;
 }

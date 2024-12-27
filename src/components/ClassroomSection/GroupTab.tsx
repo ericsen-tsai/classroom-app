@@ -9,6 +9,7 @@ const Group = styled.div`
   overflow-y: scroll;
   height: 100%;
   max-height: 18rem;
+  width: 100%;
 `;
 
 const GroupTitle = styled.h4`

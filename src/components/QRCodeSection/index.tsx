@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { IoCloseSharp } from 'react-icons/io5';
 import { MdOutlineContentCopy, MdKeyboardArrowLeft } from 'react-icons/md';
 import QRCode from 'react-qr-code';
@@ -12,13 +14,16 @@ const Container = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1rem 1.5rem;
   width: 25rem;
+  min-width: 25rem;
   position: relative;
+  cursor: default;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  cursor: move;
 `;
 
 const BackButton = styled.button`
@@ -72,7 +77,7 @@ const IconButton = styled.button`
   padding: 0.25rem;
   border-radius: 4px;
   &:hover {
-    text-decoration: underline;
+    background-color: ${({ theme }) => `${theme.colors.primary}80`};
   }
 `;
 
@@ -101,14 +106,23 @@ const CloseButton = styled.button`
   color: ${({ theme }) => theme.colors.caption};
 `;
 
-function QRCodeComponent() {
+function QRCodeComponent({ onClose }: { onClose: () => void }) {
+  const copyToClipboard = useCallback(async (text: string, message: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(message);
+    } catch {
+      toast.error('Failed to copy to clipboard');
+    }
+  }, []);
   return (
     <Container>
+      <Toaster position="top-center" />
       <Header>
         <BackButton onClick={() => alert('Back to class list')}>
           <MdKeyboardArrowLeft /> Back to Class List
         </BackButton>
-        <CloseButton onClick={() => alert('Close QR Code')}>
+        <CloseButton onClick={onClose}>
           <IoCloseSharp size={20} />
         </CloseButton>
       </Header>
@@ -116,7 +130,7 @@ function QRCodeComponent() {
       <Flex>
         <SubTitle>
           ID: X58E9647
-          <IconButton onClick={() => void navigator.clipboard.writeText('X58E9647')}>
+          <IconButton onClick={() => void copyToClipboard('X58E9647', 'Copied to clipboard')}>
             <MdOutlineContentCopy />
           </IconButton>
         </SubTitle>
@@ -124,7 +138,7 @@ function QRCodeComponent() {
           Link
           <IconButton
             onClick={() =>
-              void navigator.clipboard.writeText('https://www.classswift.viewsonic.io/')
+              void copyToClipboard('https://www.classswift.viewsonic.io/', 'Copied to clipboard')
             }
           >
             <MdOutlineContentCopy />
