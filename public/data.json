@@ -1,0 +1,27 @@
+{
+  "name": "Science Class 302",
+  "students": [
+    { "name": "Alice Johnson", "score": -2, "seat": 1, "group": "A" },
+    { "name": "Bob Smith", "score": 3, "seat": 2, "group": "A" },
+    { "name": "Charlie Brown", "score": 4, "seat": 3, "group": "A" },
+    { "name": "Edward Miller", "score": 4, "seat": 5, "group": "A" },
+    { "name": "George Wilson", "score": 2, "seat": 7, "group": "B" },
+    { "name": "Hannah Montana", "score": 4, "seat": 8, "group": "B" },
+    { "name": "Ian Fletcher", "score": 3, "seat": 9, "group": "B" },
+    { "name": "Julia Roberts", "score": 1, "seat": 10, "group": "B" },
+    { "name": "Michael Scott", "score": 3, "seat": 13, "group": "C" },
+    { "name": "Nancy Wheeler", "score": -1, "seat": 14, "group": "C" },
+    { "name": "Oliver Twist", "score": 4, "seat": 15, "group": "C" },
+    { "name": "Patricia Lee", "score": -3, "seat": 16, "group": "D" },
+    { "name": "Rachel Green", "score": 3, "seat": 18, "group": "D" },
+    { "name": "Steve Rogers", "score": 6, "seat": 19, "group": "D" },
+    { "name": "Tina Turner", "score": -2, "seat": 20, "group": "D" },
+    { "name": "Victor Hugo", "score": 1, "seat": 22, "group": "E" },
+    { "name": "Wendy Darling", "score": 0, "seat": 23, "group": "E" },
+    { "name": "Xavier Chen", "score": 0, "seat": 24, "group": "E" },
+    { "name": "Yoko Ono", "score": 3, "seat": 25, "group": "E" },
+    { "name": "Bruce Wayne", "score": 2, "seat": 28, "group": "F" },
+    { "name": "Chloe Price", "score": 0, "seat": 29, "group": "F" },
+    { "name": "David Rose", "score": -1, "seat": 30, "group": "F" }
+  ]
+}

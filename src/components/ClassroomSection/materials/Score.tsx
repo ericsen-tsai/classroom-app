@@ -69,14 +69,14 @@ const Counter = styled.span`
   color: #333;
 `;
 
-type RoomProps = {
+type ScoreProps = {
   name: string;
   initialCount: number;
   title: string;
   disabled?: boolean;
 };
 
-function Room({ name, initialCount, title, disabled }: RoomProps) {
+function Score({ name, initialCount, title, disabled }: ScoreProps) {
   const [count, setCount] = useState(initialCount);
 
   return (
@@ -96,4 +96,4 @@ function Room({ name, initialCount, title, disabled }: RoomProps) {
   );
 }
 
-export default Room;
+export default Score;

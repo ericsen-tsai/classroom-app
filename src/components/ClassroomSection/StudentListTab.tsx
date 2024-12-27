@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import Room from './materials/Room';
+import Score from './materials/Score';
 
 const StudentGrid = styled.div`
   display: grid;
@@ -27,7 +27,7 @@ function StudentListTab({ students }: StudentListTabProps) {
   return (
     <StudentGrid>
       {students.map((student, index) => (
-        <Room
+        <Score
           key={index}
           name={student.name}
           initialCount={student.positiveScore}
