@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IoMdPerson } from 'react-icons/io'; // Styled components
 import { IoMdMore } from 'react-icons/io';
 import { IoCloseSharp } from 'react-icons/io5';
 import styled from 'styled-components';
 
+import GroupTab from './GroupTab';
 import { PopoverAnchor, PopoverButton, PopoverContent } from './materials/Popover';
-import Room from './materials/Room';
 import { Tabs, TabContainer } from './materials/Tabs';
+import StudentListTab from './StudentListTab';
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,8 @@ const Container = styled.div`
   padding-top: 1rem;
   position: relative;
   height: 26.5rem;
-  width: 40rem;
+  width: 35rem;
+  min-width: 35rem;
 `;
 
 const Header = styled.div`
@@ -46,18 +48,6 @@ const SubTitle = styled.div`
   color: ${({ theme }) => theme.colors.caption};
 `;
 
-const StudentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  width: 100%;
-  overflow-y: scroll;
-  height: 100%;
-  max-height: 18rem;
-  padding-right: 1rem;
-  padding-left: 1rem;
-`;
-
 const CloseButton = styled.button`
   background: none;
   border: none;
@@ -74,6 +64,15 @@ const TabsHeader = styled.div`
   align-items: center;
   width: 100%;
   padding: 0 1.5rem;
+`;
+
+const WinnerPopoverText = styled.p`
+  text-align: no-wrap;
+`;
+
+const WinnerPopoverName = styled.span`
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 // Example usage
@@ -110,6 +109,29 @@ const students = [
   { name: 'Joe', positiveScore: 0, negativeScore: -1, isGuest: false },
 ];
 
+const groups = [
+  {
+    name: 'Group 1',
+    students: [
+      { name: 'Gloria', score: 1 },
+      { name: 'Darrell', score: 2 },
+      { name: 'Philip', score: 3 },
+      { name: 'Cody', score: 4 },
+      { name: 'Bessie', score: 5 },
+    ],
+  },
+  {
+    name: 'Group 2',
+    students: [
+      { name: 'Gloria', score: -1 },
+      { name: 'Darrell', score: 2 },
+      { name: 'Philip', score: 3 },
+      { name: 'Cody', score: 4 },
+      { name: 'Bessie', score: 5 },
+    ],
+  },
+];
+
 const StudentList = ({
   students,
   title,
@@ -126,6 +148,20 @@ const StudentList = ({
 }) => {
   const [tab, setTab] = useState('studentList');
   const [showPopover, setShowPopover] = useState(false);
+
+  const renderContent = useMemo(() => {
+    switch (tab) {
+      case 'studentList':
+        return <StudentListTab students={students} />;
+      case 'group':
+        return <GroupTab groups={groups} />;
+      default:
+        return null;
+    }
+  }, [students, tab]);
+
+  const winner = 'Philip';
+
   return (
     <Container>
       <Header>
@@ -158,24 +194,17 @@ const StudentList = ({
             <IoMdMore size={20} />
           </PopoverButton>
           <PopoverContent show={showPopover} onClose={() => setShowPopover(false)}>
-            Hello
+            <WinnerPopoverText>
+              Winner: <WinnerPopoverName>{winner}</WinnerPopoverName>
+            </WinnerPopoverText>
+            <WinnerPopoverText>
+              1st Group: <WinnerPopoverName>{winner}</WinnerPopoverName>
+            </WinnerPopoverText>
           </PopoverContent>
         </PopoverAnchor>
       </TabsHeader>
 
-      <TabContainer>
-        <StudentGrid>
-          {students.map((student, index) => (
-            <Room
-              key={index}
-              name={student.name}
-              initialCount={student.positiveScore}
-              title={(index + 1).toString().padStart(2, '0')}
-              disabled={student.isGuest}
-            />
-          ))}
-        </StudentGrid>
-      </TabContainer>
+      <TabContainer>{renderContent}</TabContainer>
     </Container>
   );
 };

@@ -84,10 +84,7 @@ function Room({ name, initialCount, title, disabled }: RoomProps) {
       <CardHeader $disabled={disabled}>{title}</CardHeader>
       <CardBody>{name}</CardBody>
       <CardFooter>
-        <FooterButton
-          onClick={() => setCount(Math.max(0, count - 1))}
-          $disabled={disabled || count === 0}
-        >
+        <FooterButton onClick={() => setCount(count - 1)} $disabled={disabled}>
           -1
         </FooterButton>
         <Counter>{count}</Counter>

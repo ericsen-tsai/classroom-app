@@ -42,11 +42,12 @@ const Popover = styled.div<{ $show: boolean }>`
   right: 8px;
   top: 24px;
   background: white;
-  padding: 8px;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: ${(props) => (props.$show ? 'block' : 'none')};
   z-index: 1000;
+  width: max-content;
 `;
 
 export function PopoverContent({
